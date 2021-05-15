@@ -1,0 +1,128 @@
+{% extends 'starter.html' %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+<div class="panel-body">
+    <div class="tab-content">
+        <form class="" id="quoteForm" method="post" action="" >
+            {% csrf_token %}
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="port">请选择目的地</label>
+                </div>
+                <div class="form-group">
+                    <input type="radio" id="fba_warehouse" name="dest" onclick="radio_check()" checked  />
+                    <label type="text" > FAB 仓点</label>
+                    <label id="warehouse_id">
+                    <select id="fba_code" name="fba_code" class="form-control" style="margin-right: 50px" searchable>
+                        <option value= "{% if warehouse_data.0.0 == '' %}{{ warehouse_data.0.0 }}{% endif %}">选择需要派送的仓库代码</option>
+                        {% for amazon in amazon_warehouse %}
+                            <option value= {{ amazon.amazon }}
+                                    {% if amazon.amazon.fba_code == warehouse_data.0.0 %}
+                                        selected
+                                    {% endif %}>
+                                {{ amazon.amazon.fba_code }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    </label>
+                </div>
+                <div class="form-group">
+                     <input type="radio" id="no_fba_warehouse" name="dest"  onclick="radio_check()"><label type="text">非FAB 仓点</label>
+                    <label id="uk_postcode" style="display: none">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请输入英国派送地址邮编(Postcode)</label><label>
+                    <input class="form-control" id="postcode" name="postcode" maxlength="8" minlength="4"
+                           value="{{ forms.data.postcode }}" placeholder="postcode" type="text"
+                           style="text-transform: uppercase; display: none" />
+                    {% if forms.errors.postcode.data.0.message %}
+                        <label id="postcode_fail" class="text-danger">{{ forms.errors.postcode.data.0.message }}</label>
+                    {% endif %}
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>体积（立方米）</label>
+                    <label>
+                    <input class="form-control" id="volume" name="volume" maxlength="8"
+                           value="{{ forms.data.postcode }}" placeholder="体积" type="text"
+                           style="text-transform: uppercase"
+                           oninput="limit_Decimal_2(this)" required />
+                    {% if forms.errors.postcode.data.0.message %}
+                        <label id="volume_fail" class="text-danger">{{ forms.errors.volume.data.0.message }}</label>
+                    {% endif %}
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>重量（公斤）</label>
+                    <label>
+                    <input class="form-control" id="weight" name="weight"
+                           value="{{ forms.data.postcode }}" placeholder="重量" type="text"
+                           style="text-transform: uppercase" oninput="limit_Decimal_2(this)" required />
+                    {% if forms.errors.weight.data.0.message %}
+                        <label id="weight_fail" class="text-danger">{{ forms.errors.weight.data.0.message }}</label>
+                    {% endif %}
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label >清关HS Code 数量</label>
+                <label>
+                    <input class=" form-control " id="hs_code_number" name="hs_code_number"
+                           value="{{ forms.data.hs_code_number }}" placeholder="HS Code数量" type="text"
+                           onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D|^0/g,'')" required />
+                    {% if forms.errors.hs_code_number.data.0.message %}
+                        <label id="hs_code_number_fail" class="text-danger">{{ forms.errors.hs_code_number.data.0.message }}</label>
+                    {% endif %}
+                </label>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 带磁</label>
+                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 带电</label>
+                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 部分带液体（纯液体类，电池类不收）</label>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 清关是否做PVA递延</label>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit">开始询价</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+    <!-- /form-panel -->
+{% endblock %}
+{% block my_script %}
+    <script type="text/javascript">
+        //如果有输入， 清除错误提示
+         $("#postcode").bind('input propertychange', function () {
+             $('#postcode_fail').html('')
+         })
+
+         $("#hs_code_number").bind('input propertychange', function () {
+             $('#hs_code_number_fail').html('')
+         })
+
+         $("#volume").bind('input propertychange', function () {
+             $('#volume_fail').html('')
+        })
+
+         $("#weight").bind('input propertychange', function () {
+             $('#weight_fail').html('')
+         })
+
+    var pathTypeArr = document.getElementsByName("dest");
+    function radio_check()
+      {
+        if (document.getElementById("fba_warehouse").checked) {
+            document.getElementById('warehouse_id').style.display='';
+            document.getElementById('uk_postcode').style.display='none';
+            document.getElementById('postcode').style.display='none';
+        }
+        if (document.getElementById("no_fba_warehouse").checked) {
+            document.getElementById('warehouse_id').style.display='none';
+            document.getElementById('uk_postcode').style.display='';
+            document.getElementById('postcode').style.display='';
+        }
+      }
+
+    </script>
+{% endblock %}

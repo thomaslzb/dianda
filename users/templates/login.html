@@ -1,0 +1,87 @@
+{% extends 'starter.html' %}
+{% load i18n %}
+{% load static %}
+{% load i18n %}
+{% block the_tilte %}
+    {% trans 'PTP 点达系统|登录' %}
+{% endblock %}
+{% block content %}
+    <div class="hold-transition login-page">
+    <div class="login-box">
+      <!-- /.login-logo -->
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <label class="h4"><b>PTP </b>{% trans "点达系统" %}</label>
+        </div>
+        <div class="card-body">
+
+          <form action="" method="post">
+              {% csrf_token %}
+            <div class="input-group mb-3">
+              <input type="email" autocomplete="on" class="form-control" name="email"
+                     placeholder={% trans "电子邮件" %} value="{{ email }}" required autofocus>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input type="password" autocomplete="off" class="form-control" name="password"
+                     placeholder={% trans "密码" %} required>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+                <input  type="text" autocomplete="off" id="id_captcha_1" name="captcha_1" maxlength="4"
+                        class="form-control col-sm-4" placeholder="{% trans '验证码' %}" style="margin-right: 1px" required>
+                <button class='js-captcha-refresh'>
+                    <img src="{{ image_url }}" alt="captcha" class="captcha" height="30">
+                </button>
+                <input id="id_captcha_0" name="captcha_0" type="hidden" value="{{ hash_key }}">
+            </div>
+            {% if msg %}
+                <div>
+                     <label class="col-form-label-sm text-danger">{{ msg }}</label>
+                </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-8">
+              </div>
+              <!-- /.col -->
+              <div class="col-4">
+                <button type="submit" class="js-captcha-refresh btn btn-primary btn-block">{% trans "登录" %}</button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+
+          <p class="mb-1">
+            <a href="{% url 'users:forgot_pwd' %}">{% trans "忘记密码" %}</a>
+          </p>
+          <p class="mb-0">
+            <a href="{% url 'users:register' %}" class="text-center">{% trans "注册一个新用户" %}</a>
+          </p>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+<!-- /.login-box -->
+</div>
+{% endblock %}
+{% block my_script %}
+    <script>
+   $('.js-captcha-refresh').click(function() {
+      $.getJSON("/captcha/refresh/",
+          function (result) {
+              $('.captcha').attr('src', result['image_url']);
+              $('#id_captcha_0').val(result['key'])
+          });
+   });
+    </script>
+{% endblock %}
