@@ -4,13 +4,14 @@ from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.translation import gettext as _
 
 from users.forms import LoginForm, RegisterForm, ForgetPwdForm
 from users.models import UserProfile
 from utils.email_send import send_register_email
+from utils.tools import validate_mobile
 
 
 def index(request):
@@ -58,7 +59,7 @@ class LoginView(View):
             return render(request, "login.html", locals())
 
 
-# 用户注册
+# 用户注册(包括手机注册，邮箱注册)
 class RegisterView(View):
     def get(self, request):
         register_form = RegisterForm()
@@ -88,12 +89,20 @@ class ForgotPwdView(View):
 
     def post(self, request):
         forget_pwd_form = ForgetPwdForm(request.POST)
-        if forget_pwd_form.is_valid():
-            email = request.POST.get("email", "")
-            # send a new mail for reset password 测试成功
-            send_register_email(email, "forget",)
 
-            return render(request, "send_resetPwd_success.html")
+        if forget_pwd_form.is_valid():
+            user_id = request.POST.get("user_id", "")
+            if validate_mobile(user_id):
+                # send a new mail for reset password 测试成功
+                # send_register_mobile(user_id, "forget", )
+                pass
+                return redirect('users:login')
+            else:
+                # send a new mail for reset password 测试成功
+                send_register_email(user_id, "forget",)
+                # 提示已经发了邮件
+                return render(request, "send_resetPwd_success.html")
         else:
             return render(request, "forgot_password.html", {"forgetPwd_form": forget_pwd_form})
+
 

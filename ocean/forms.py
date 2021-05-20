@@ -25,11 +25,13 @@ class FbaQuoteForm(forms.Form):
         hs_code_number = int(self.cleaned_data.get('hs_code_number'))
         if hs_code_number <= 0:
             raise forms.ValidationError('HS Code 的数量必须大于0.')
+        return hs_code_number
 
     def clean_fba_number(self):
         fba_number = int(self.cleaned_data.get('fba_number'))
         if fba_number <= 0:
             raise forms.ValidationError('FBA的数量必须大于0.')
+        return fba_number
 
 
 class PrivateQuoteForm(forms.Form):
@@ -76,5 +78,6 @@ class CabinetQuoteForm(forms.Form):
         hs_code_number = int(self.cleaned_data.get('hs_code_number'))
         if hs_code_number <= 0:
             raise forms.ValidationError('HS Code 的数量必须大于0.')
+        return hs_code_number
 
 

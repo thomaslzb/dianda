@@ -25,11 +25,14 @@ from django.conf.urls.i18n import i18n_patterns
 from . import views
 
 # 设置多语种
+from .views import ptp_home
+
 urlpatterns = [
     path('i18n/', i18n_patterns),
 ]
 
 urlpatterns += [
+    path('', ptp_home, name='ptp_home'),
     path('admin/', admin.site.urls),
     path('login', LoginView.as_view(), name='index'),  # 登录
     path('captcha', include('captcha.urls')),   # 生成验证码

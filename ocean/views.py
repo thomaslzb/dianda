@@ -2,6 +2,7 @@ import datetime
 
 from django.shortcuts import render
 from django.views import View
+from django.utils.translation import gettext as _
 
 from ocean.forms import FbaQuoteForm, PrivateQuoteForm, CabinetQuoteForm
 from ocean.models import OceanPortModel, AmazonPriceModel, FbaItemPriceModel, ContainModel, CabinetItemPriceModel
@@ -42,7 +43,7 @@ class OceanCalcFbaView(View):
             # 判断仓库及体积是否均有输入及是否有重复输入的仓库代码
             if warehouse_code == '':
                 find_error = True
-                error_msg = '请选择需要派送的亚马逊仓库代码'
+                error_msg = _('请选择需要派送的亚马逊仓库代码')
                 warehouse_data.append([warehouse_code, warehouse_volume, warehouse_weight, ])
             else:
                 if warehouse_code != 'NO-DATA' and warehouse_volume != 'NO-DATA':
@@ -51,12 +52,12 @@ class OceanCalcFbaView(View):
                     pass
                 else:
                     find_error = True
-                    error_msg = '请选择需要派送的亚马逊仓库代码'
+                    error_msg = _('请选择需要派送的亚马逊仓库代码')
                     warehouse_data.append([warehouse_code, warehouse_volume, warehouse_weight, ])
 
             if warehouse_code in warehouse_code_list:
                 find_error = True
-                error_msg = '仓库代码有重复，请检查'
+                error_msg = _('仓库代码有重复，请检查')
             else:
                 if warehouse_code != 'NO-DATA':
                     warehouse_code_list.append(warehouse_code)

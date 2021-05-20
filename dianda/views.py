@@ -15,8 +15,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 
-def hello(request):
-    return HttpResponse("Hello DCG, I am Coming...")
+def ptp_home(request):
+    return render(request, 'building.html')
 
 
 def bad_request(request, template_name='errors/page_404.html'):   # 400

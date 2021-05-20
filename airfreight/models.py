@@ -15,6 +15,9 @@ class AirfreightReceiptLocal(models.Model):
         verbose_name = "airfreight_receipt_local"
         ordering = ['city', ]
 
+    def __str__(self):
+        return '{0}'.format(self.city)
+
 
 # 空运 postcode 分类 收费列表
 class AirfreightPostcodeType(models.Model):
@@ -77,7 +80,9 @@ class AirfreightItemPrice(models.Model):
 # 空运收费列表
 class AirfreightPrice(models.Model):
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=5, null=False, default="", unique=True, verbose_name="code", )
+    code = models.CharField(max_length=5, null=False, default="", verbose_name="code", )
+    receipt_area = models.ForeignKey('AirfreightReceiptLocal', to_field='id', related_name='op_airfreight_receipt',
+                                     on_delete=models.CASCADE, default=1, verbose_name="receipt_area")
     en_name = models.CharField(max_length=50, null=False, default="", verbose_name="en_name", )
     cn_name = models.CharField(max_length=50, null=False, default="", verbose_name="cn_name", )
     currency = models.CharField(max_length=3, null=False, default="RMB", verbose_name="currency", )
@@ -97,3 +102,4 @@ class AirfreightPrice(models.Model):
         db_table = "airfreight_price"
         verbose_name = "airfreight_price"
         ordering = ['code', ]
+        unique_together = ('code', 'receipt_area')

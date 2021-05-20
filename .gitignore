@@ -2,3 +2,4 @@
 dianda/
 *.xml
 *.iml
+*.pyc

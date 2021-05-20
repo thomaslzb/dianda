@@ -26,21 +26,26 @@ def exchange_string(s):
     return s
 
 
-def is_float(numstr):
+def is_float(num_str):
     """
-     字符串是否是浮点数(整数算小数)
+     判断字符串是否是浮点数(整数算小数)
+    :param num_str: 字符串
+    :return: True / False
     """
-    flag = False
-    numStr = str(numstr).strip().lstrip('-').lstrip('+')  # 去除正数(+)、负数(-)符号
+    num_str = str(num_str).strip().lstrip('-').lstrip('+')  # 去除正数(+)、负数(-)符号
     try:
-        numFloat = float(numstr)
-        flag = True
+        num_str = float(num_str)
+        return True
     except:
-        flag = False
-    return flag
+        return False
 
 
 def format_postcode(postcode):
+    """
+    格式化英国邮编
+    :param postcode: 正常的英国邮编
+    :return: 去掉后面三位后，邮编字符串
+    """
     postcode = postcode.strip().upper()
     if len(postcode) > 3:
         postcode = postcode[0:len(postcode) - 3].strip() + \
@@ -63,3 +68,25 @@ def run_timer(func):
         return ret_value
     return wrapper
 
+
+def validate_email(email):
+    """
+    判断是否是合法的email地址
+    :param email: email 字符串
+    :return: True / False
+    """
+    if len(email) > 7:
+        if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) is not None:
+            return True
+    return False
+
+
+def validate_mobile(phone):
+    """
+    判断是否是合法的手机号码
+    :param phone: 手机号码
+    :return: True / False
+    """
+    if len(phone) == 11 and re.match(r'1\d{10}', phone):
+        return True
+    return False

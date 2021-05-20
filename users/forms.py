@@ -15,6 +15,7 @@ from captcha.fields import CaptchaField
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
+from utils.tools import validate_mobile, validate_email
 from utils.views import email_check
 
 
@@ -79,21 +80,21 @@ class RegisterForm(forms.Form):
 
 
 class ForgetPwdForm(forms.Form):
-    username = forms.CharField(max_length=20, required=True, error_messages={"required": _("请输入用户名")})
-    email = forms.CharField(required=True, error_messages={"required": _("请输入登录的电子邮件")})
-    agree_term = forms.BooleanField()
+    user_id = forms.CharField(required=True, error_messages={"required": _("请输入电子邮件或手机号")})
 
     def clean(self):
-        username = self.data.get('username')
-        email = self.data.get('email')
-
-        filter_result = User.objects.filter(username__exact=username, email__exact=email)
-        if len(filter_result) == 0:
-            raise forms.ValidationError(_("输入的用户或邮件不存在"))
+        user_id = self.data.get('user_id')
+        if validate_mobile(user_id):
+            filter_result = User.objects.filter(username__exact=user_id)
+            if len(filter_result) == 0:
+                raise forms.ValidationError(_("输入的手机号码不存在"))
+        else:
+            if validate_email(user_id):
+                filter_result = User.objects.filter(username__exact=user_id)
+                if len(filter_result) == 0:
+                    raise forms.ValidationError(_("输入的邮箱不存在"))
+            else:
+                raise forms.ValidationError(_("请输入合法的邮箱或手机号码"))
 
         return
-
-    def clean_agree_term(self):
-        agree_term = self.data.get('agree_term')
-        return agree_term
 

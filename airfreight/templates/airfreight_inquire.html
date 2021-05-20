@@ -8,10 +8,25 @@
             {% csrf_token %}
             <div class="col-lg-6">
                 <div class="form-group">
+                    <label for="port">请选择送货地点：</label>
+                </div>
+                <label id="receipt_area">
+                    <select id="receipt_area" name="receipt_area" class="form-control" style="margin-right: 50px" >
+                        {% for receipt in receipt_area %}
+                            <option value= {{ receipt.id }}
+                                    {% if receipt.id == warehouse_data.0.0 %}
+                                        selected
+                                    {% endif %}>
+                                {{ receipt.city }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <div class="form-group">
                     <label for="port">请选择目的地</label>
                 </div>
                 <div class="form-group">
-                    <input type="radio" id="fba_warehouse" name="dest" onclick="radio_check()" checked  />
+                    <input type="radio" id="fba_warehouse" name="delivery_warehouse" value="fba" onclick="radio_check()" checked  />
                     <label type="text" > FAB 仓点</label>
                     <label id="warehouse_id">
                     <select id="fba_code" name="fba_code" class="form-control" style="margin-right: 50px" searchable>
@@ -28,7 +43,7 @@
                     </label>
                 </div>
                 <div class="form-group">
-                     <input type="radio" id="no_fba_warehouse" name="dest"  onclick="radio_check()"><label type="text">非FAB 仓点</label>
+                    <input type="radio" id="no_fba_warehouse" name="delivery_warehouse" value="no_fba" onclick="radio_check()"><label type="text">非FAB 仓点</label>
                     <label id="uk_postcode" style="display: none">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请输入英国派送地址邮编(Postcode)</label><label>
                     <input class="form-control" id="postcode" name="postcode" maxlength="8" minlength="4"
                            value="{{ forms.data.postcode }}" placeholder="postcode" type="text"
@@ -74,12 +89,15 @@
                 </label>
                 </div>
                 <div class="form-group">
-                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 带磁</label>
-                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 带电</label>
-                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 部分带液体（纯液体类，电池类不收）</label>
+                    <input type="checkbox" id="magnetic" name="magnetic"><label type="text"> 带磁</label>
+                    <input type="checkbox" id="electricity" name="electricity"><label type="text"> 带电</label>
+                    <input type="checkbox" id="liquid" name="liquid"><label type="text"> 部分带液体（纯液体类，电池类不收）</label>
                 </div>
                 <div class="form-group">
-                    <input type="checkbox" id="fba_warehouse" name="dest"><label type="text" onfocus="show1()"> 清关是否做PVA递延</label>
+                    <input type="checkbox" id="pva" name="pva"><label type="text"> 清关是否做PVA递延</label>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="tax" name="tax"><label type="text"> 税金是否预付</label>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary" type="submit">开始询价</button>

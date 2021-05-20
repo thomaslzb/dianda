@@ -29,6 +29,7 @@ class EmailVerifyRecord(models.Model):
                                  choices=(("register", "Register"), ("forget", "Forget Password"),
                                           ("update_email", "Modify Email")),
                                  max_length=30)
+    one_time_password = models.CharField(max_length=6, verbose_name="One Time Password")
     is_used = models.BooleanField(default=False, verbose_name='is_used')
     send_time = models.DateTimeField(verbose_name="Send Date", auto_now=True)
 
